@@ -5,13 +5,14 @@ const contactSchema = new Schema(
     name: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     email: { type: String, required: false },
-    isFavourite: { type: Boolean, required: false,  defaul: false },
+    isFavourite: { type: Boolean, required: false, defaul: false },
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
       required: true,
       default: 'personal',
     },
+    userId: { type: Schema.Types.ObjectId, required: true },
   },
   { timestamps: true, versionKey: false },
 );

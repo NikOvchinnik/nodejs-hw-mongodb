@@ -15,6 +15,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     res.status(500).json({
       status: err.status,
       message: 'Mongoose error',
+      data: err,
     });
     return;
   }

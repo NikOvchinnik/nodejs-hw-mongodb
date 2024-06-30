@@ -11,30 +11,36 @@ import { isValidId } from '../middlewares/validateMongoId.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema } from '../validation/createContactSchema.js';
 import { updateContactSchema } from '../validation/updateContactSchema.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
-const router = Router();
+const contactsRouter = Router();
 
-router.use('/contacts/:contactId', isValidId('contactId'));
+contactsRouter.use('/', authenticate);
 
-router.get('/contacts', ctrlWrapper(getAllContactsController));
+contactsRouter.use('/contacts/:contactId', isValidId('contactId'));
 
-router.get(
+contactsRouter.get('/contacts', ctrlWrapper(getAllContactsController));
+
+contactsRouter.get(
   '/contacts/:contactId',
   ctrlWrapper(getContactByIdController),
 );
 
-router.post(
+contactsRouter.post(
   '/contacts',
   validateBody(createContactSchema),
   ctrlWrapper(addContactController),
 );
 
-router.patch(
+contactsRouter.patch(
   '/contacts/:contactId',
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
-router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
+contactsRouter.delete(
+  '/contacts/:contactId',
+  ctrlWrapper(deleteContactController),
+);
 
-export default router;
+export default contactsRouter;
