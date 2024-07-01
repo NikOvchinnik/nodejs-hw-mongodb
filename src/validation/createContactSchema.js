@@ -21,5 +21,4 @@ export const createContactSchema = Joi.object({
     'string.base': 'Type should be a string',
     'any.required': 'Type is required',
   }),
-  userId: Joi.string().required(),
 });

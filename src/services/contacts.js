@@ -8,11 +8,13 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  userId,
 }) => {
+  console.log(userId);
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find();
+  const contactsQuery = ContactsCollection.find({ userId });
 
   if (filter.type) {
     contactsQuery.where('contactType').equals(filter.type);
@@ -21,7 +23,7 @@ export const getAllContacts = async ({
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
-  const contactsCount = await ContactsCollection.find()
+  const contactsCount = await ContactsCollection.find({ userId })
     .merge(contactsQuery)
     .countDocuments();
 
@@ -39,29 +41,32 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (contactId) => {
-  // if (!mongoose.Types.ObjectId.isValid(contactId)) {
-  //   return null;
-  // }
-  const contact = await ContactsCollection.findById(contactId);
+export const getContactById = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+    userId,
+  });
   return contact;
 };
 
-export const addContact = async (payload) => {
-  const contact = await ContactsCollection.create(payload);
+export const addContact = async (payload, userId) => {
+  const contact = await ContactsCollection.create({ ...payload, userId });
   return contact;
 };
 
-export const patchContact = async (contactId, payload) => {
-  const contact = await ContactsCollection.findByIdAndUpdate(
-    contactId,
+export const patchContact = async (contactId, payload, userId) => {
+  const contact = await ContactsCollection.findOneAndUpdate(
+    { _id: contactId, userId },
     payload,
     { new: true },
   );
   return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  const contact = await ContactsCollection.findByIdAndDelete(contactId);
+export const deleteContact = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOneAndDelete({
+    _id: contactId,
+    userId,
+  });
   return contact;
 };
